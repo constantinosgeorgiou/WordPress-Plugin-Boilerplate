@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -21,37 +20,52 @@
  * @author     Your Name <email@example.com>
  */
 class Plugin_Name_Admin {
-
 	/**
-	 * The ID of this plugin.
+	 * The single instance of the class.
 	 *
-	 * @since    1.0.0
-	 * @access   private
-	 * @var      string    $plugin_name    The ID of this plugin.
+	 * @var     Plugin_Name_Admin      $instance
+	 * @access  private
+	 * @since   1.0.0
 	 */
-	private $plugin_name;
-
-	/**
-	 * The version of this plugin.
-	 *
-	 * @since    1.0.0
-	 * @access   private
-	 * @var      string    $version    The current version of this plugin.
-	 */
-	private $version;
+	private static $instance = null;
 
 	/**
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
-	 * @param      string    $plugin_name       The name of this plugin.
-	 * @param      string    $version    The version of this plugin.
 	 */
-	public function __construct( $plugin_name, $version ) {
+	private function __construct() {
+	}
 
-		$this->plugin_name = $plugin_name;
-		$this->version = $version;
+	/**
+	 * Admin Instance.
+	 * Ensures only one instance of the plugin admin is loaded or can be loaded.
+	 *
+	 * @since   1.0.0
+	 */
+	public static function instance() {
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
+		}
+		return self::$instance;
+	}
 
+	/**
+	 * Cloning is forbidden.
+	 *
+	 * @since   1.0.0
+	 */
+	public function __clone() {
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Cloning is forbidden.', 'plugin-name' ), '1.0.0' );
+	}
+
+	/**
+	 * Unserializing instances of this class is forbidden.
+	 *
+	 * @since   1.0.0
+	 */
+	public function __wakeup() {
+		_doing_it_wrong( __FUNCTION__, esc_html__( 'Unserializing instances of this class is forbidden.', 'plugin-name' ), '1.0.0' );
 	}
 
 	/**
@@ -73,7 +87,7 @@ class Plugin_Name_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/plugin-name-admin.css', array(), $this->version, 'all' );
+		wp_enqueue_style( PLUGIN_NAME_CONTEXT . '-css', PLUGIN_NAME_PLUGIN_URL . '/admin/css/plugin-name-admin.css', array(), PLUGIN_NAME_VERSION, 'all' );
 
 	}
 
@@ -96,7 +110,7 @@ class Plugin_Name_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/plugin-name-admin.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( PLUGIN_NAME_CONTEXT . '-js', PLUGIN_NAME_PLUGIN_URL . '/admin/js/plugin-name-admin.js', array( 'jquery' ), PLUGIN_NAME_VERSION, false );
 
 	}
 

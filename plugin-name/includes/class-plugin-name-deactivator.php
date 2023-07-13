@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Fired during plugin deactivation
  *
@@ -23,9 +22,7 @@
 class Plugin_Name_Deactivator {
 
 	/**
-	 * Short Description. (use period)
-	 *
-	 * Long Description.
+	 * Runs once when plugin is deactivated.
 	 *
 	 * @since    1.0.0
 	 */
