@@ -11,40 +11,39 @@ PLUGIN_NAME="plugin-name"
 
 # EDITING STOPS HERE. DO NOT CHANGE ANY OF THE FOLLOWING.
 
-# +------------------+
-# |                  |
-# |    Setting up    |
-# |                  |
-# +------------------+
+# +---------------------------+
+# |                           |
+# |    Generating ZIP file    |
+# |                           |
+# +---------------------------+
 
 PROJECT_PATH=$(readlink --canonicalize "$(basename ${PLUGIN_NAME})")
 echo $PROJECT_PATH
 BUILD_PATH="${PROJECT_PATH}/build"
-DEST_PATH="$BUILD_PATH/$PLUGIN_SLUG"
-BIN_PATH="${PROJECT_PATH}/bin"
-
+DEST_PATH="$BUILD_PATH/$PLUGIN_NAME"
 
 echo "Generating build directory..."
 rm -rf "$BUILD_PATH"
 mkdir -p "$DEST_PATH"
 
-exit
+composer_dependencies="$(find "$PROJECT_PATH" -maxdepth 1 -type f -name 'composer.json' | wc --lines)"
+if ((composer_dependencies > 0)); then
+    echo "Installing PHP dependencies..."
+    composer install -d "$PROJECT_PATH" --no-dev || exit "$?"
+fi
 
-echo "Installing PHP dependencies..."
-composer install --no-dev || exit "$?"
-
-# echo "Generating stylesheets..."
-# sh "$BIN_PATH/generate-stylesheets.sh"
+# TODO(dependencies): Check for package.json to install JS dependencies.
 
 echo "Syncing files..."
 rsync --recursive --checksum --include="$PROJECT_PATH/.env" --exclude-from="$PROJECT_PATH/.distignore" "$PROJECT_PATH/" "$DEST_PATH/" --delete --delete-excluded
 
 echo "Generating zip file..."
+
 cd "$BUILD_PATH" || exit
-zip --quiet --recurse-paths "${PLUGIN_SLUG}.zip" "$PLUGIN_SLUG/"
+zip --quiet --recurse-paths "${PLUGIN_NAME}.zip" "$PLUGIN_NAME/"
 
 cd "$PROJECT_PATH" || exit
-mv "$BUILD_PATH/${PLUGIN_SLUG}.zip" "$PROJECT_PATH"
-echo "${PLUGIN_SLUG}.zip file generated!"
+mv "$BUILD_PATH/${PLUGIN_NAME}.zip" "$(dirname "$PROJECT_PATH")"
+echo "${PLUGIN_NAME}.zip file generated!"
 
-echo "Build done!"
+echo -e "\n\u2714 Build done!\n"
