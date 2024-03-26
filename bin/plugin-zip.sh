@@ -46,4 +46,7 @@ cd "$PROJECT_PATH" || exit
 mv "$BUILD_PATH/${PLUGIN_NAME}.zip" "$(dirname "$PROJECT_PATH")"
 echo "${PLUGIN_NAME}.zip file generated!"
 
+echo "Cleaning up..."
+rm -r "${BUILD_PATH}"
+
 echo -e "\n\u2714 Build done!\n"
