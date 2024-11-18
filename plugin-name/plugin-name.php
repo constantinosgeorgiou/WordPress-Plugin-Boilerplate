@@ -76,10 +76,6 @@ function plugin_name() {
  * @since    1.0.0
  */
 function run_plugin_name() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-plugin-name-activator.php';
-	if ( ! Plugin_Name_Activator::check_plugin_dependencies() ) {
-		return;
-	}
 	$GLOBALS['plugin-name'] = plugin_name();
 }
 
